@@ -1,11 +1,11 @@
 <div class="container-fluid mt-4">
   <h2>Habitaciones</h2>
-  <!-- <div class="d-flex justify-content-between mb-3">
+  <div class="d-flex justify-content-between mb-3">
     <button (click)="toggleForm()" class="btn btn-success">
       <i class="fa fa-plus"></i>
-      Registrar Categoría
+      Registrar Habitación
     </button>
-  </div> -->
+  </div>
   <table class="table table-striped table-bordered mt-3">
     <thead class="table-dark">
       <tr style="text-align: center">
@@ -18,45 +18,52 @@
         <th scope="col">Acciones</th>
       </tr>
     </thead>
-    <!-- <tbody>
+    <tbody>
       <tr
         style="text-align: center"
-        *ngFor="let categoria of categorias; let i = index"
+        *ngFor="let habitacion of habitaciones; let i = index"
       >
         <td>{{ i + 1 }}</td>
-        <td hidden>{{ categoria.id }}</td>
-        <td>{{ categoria.nombre }}</td>
-        <td>{{ categoria.descripcion }}</td>
-        <td>
+        <td hidden>{{ habitacion.id }}</td>
+        <td>{{ habitacion.numero }}</td>
+        <td>{{ getTipoDescripcion(habitacion.idTipo) }}</td>
+        <td>{{ habitacion.precio | currency : "MXN" }}</td>
+        <td>{{ habitacion.capacidad }}</td>
+        <td>{{ getEstadoHabitacionDescripcion(habitacion.idEstado) }}</td>
+
+        <td *ngIf="showActions">
+          <!-- PARA QUE SE VEAN LAS ACCIONES -->
           <button
             class="btn btn-primary btn-sm me-1"
-            (click)="editCategoria(categoria)"
+            (click)="editHabitacion(habitacion)"
+            *ngIf="habitacion.idEstado !== EstadoHabitacionCodigo.OCUPADA"
           >
             <i class="fa fa-edit"></i> Editar
           </button>
           <button
             class="btn btn-danger btn-sm ms-1"
-            (click)="deleteCategoria(categoria.id)"
+            (click)="deleteHabitacion(habitacion.id)"
+            *ngIf="habitacion.idEstado !== EstadoHabitacionCodigo.OCUPADA"
           >
             <i class="fa fa-trash"></i> Eliminar
           </button>
         </td>
       </tr>
-    </tbody> -->
+    </tbody>
   </table>
 
   <!-- Modal -->
-  <!-- <div
+  <div
     class="modal fade"
-    #categoriaModalRef
+    #habitacionModalRef
     tabindex="-1"
-    aria-labelledby="categoriaModalLabel"
+    aria-labelledby="habitacionModalLabel"
     aria-hidden="true"
   >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header bg-dark text-white">
-          <h5 class="modal-title" id="categoriaModalLabel">{{ modalText }}</h5>
+          <h5 class="modal-title" id="habitacionModalLabel">{{ modalText }}</h5>
           <button
             type="button"
             class="btn-close btn-close-white"
@@ -64,31 +71,78 @@
             aria-label="Cerrar"
           ></button>
         </div>
+
         <div class="modal-body">
-          <form [formGroup]="categoriaForm" (ngSubmit)="onSumbmit()">
+          <form [formGroup]="habitacionForm" (ngSubmit)="onSubmit()">
             <div class="mb-3">
-              <label for="nombre" class="form-label">Nombre</label>
+              <label for="numero" class="form-label">Número</label>
               <input
-                id="nombre"
+                id="numero"
+                type="number"
                 class="form-control"
-                formControlName="nombre"
-                maxlength="30"
+                formControlName="numero"
               />
             </div>
+
             <div class="mb-3">
-              <label for="descripcion" class="form-label">Descripción</label>
+              <label for="idTipo" class="form-label">Tipo de Habitación</label>
+              <select id="idTipo" class="form-select" formControlName="idTipo">
+                <option [ngValue]="null" disabled selected>
+                  Seleccione un tipo
+                </option>
+                <option
+                  *ngFor="let tipo of tipoHabitacion"
+                  [value]="tipo.codigo"
+                >
+                  {{ tipo.descripcion }}
+                </option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="capacidad" class="form-label">Capacidad</label>
               <input
-                id="descripcion"
+                id="capacidad"
+                type="number"
                 class="form-control"
-                formControlName="descripcion"
-                maxlength="50"
+                formControlName="capacidad"
               />
             </div>
+
+            <div class="mb-3">
+              <label for="precio" class="form-label">Precio</label>
+              <input
+                id="precio"
+                type="number"
+                class="form-control"
+                formControlName="precio"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="idEstado" class="form-label">Estado</label>
+              <select
+                id="idEstado"
+                class="form-select"
+                formControlName="idEstado"
+              >
+                <option [ngValue]="null" disabled selected>
+                  Seleccione un estado
+                </option>
+                <option
+                  *ngFor="let estado of estadosHabitacion"
+                  [value]="estado.codigo"
+                >
+                  {{ estado.descripcion }}
+                </option>
+              </select>
+            </div>
+
             <div class="text-center">
               <button
                 type="submit"
                 class="btn btn-success px-4"
-                [disabled]="categoriaForm.invalid"
+                [disabled]="habitacionForm.invalid"
               >
                 Guardar
               </button>
@@ -96,6 +150,9 @@
           </form>
         </div>
       </div>
+       
     </div>
-  </div> -->
+      
+  </div>
 </div>
+<div></div>
